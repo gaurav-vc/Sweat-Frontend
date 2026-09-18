@@ -43,9 +43,62 @@ const cmsOptions = [
   { group: 'Contact Page', value: 'contact_phone', label: 'Contact Us - Phone Number' },
   { group: 'Transformations Page', value: 'transformations_title', label: 'Transformations - Main Title' },
   { group: 'Transformations Page', value: 'transformations_subtitle', label: 'Transformations - Subtitle Text' },
-  { group: 'Programs Pages', value: 'pilates_hero_title', label: 'Pilates - Hero Title' },
-  { group: 'Programs Pages', value: 'bootcamp_hero_title', label: 'Bootcamp - Hero Title' },
-  { group: 'Programs Pages', value: 'online_hero_title', label: 'Online - Hero Title' },
+  { group: 'Sweat Pilates', value: 'pilates_hero_title', label: 'Hero Title' },
+  { group: 'Sweat Pilates', value: 'pilates_hero_subtitle', label: 'Hero Subtitle' },
+  { group: 'Sweat Pilates', value: 'pilates_hero_media', label: 'Hero Background Media' },
+  { group: 'Sweat Pilates', value: 'pilates_stretch_title', label: 'Stretch Program Title' },
+  { group: 'Sweat Pilates', value: 'pilates_stretch_desc', label: 'Stretch Program Text' },
+  { group: 'Sweat Pilates', value: 'pilates_stretch_media', label: 'Stretch Program Media' },
+  { group: 'Sweat Pilates', value: 'pilates_total_title', label: 'Total Program Title' },
+  { group: 'Sweat Pilates', value: 'pilates_total_desc', label: 'Total Program Text' },
+  { group: 'Sweat Pilates', value: 'pilates_total_media', label: 'Total Program Media' },
+  { group: 'Sweat Pilates', value: 'pilates_athletic_title', label: 'Athletic Program Title' },
+  { group: 'Sweat Pilates', value: 'pilates_athletic_desc', label: 'Athletic Program Text' },
+  { group: 'Sweat Pilates', value: 'pilates_athletic_media', label: 'Athletic Program Media' },
+  { group: 'Sweat Pilates', value: 'pilates_coaching_title', label: 'Coaching Title' },
+  { group: 'Sweat Pilates', value: 'pilates_coaching_desc', label: 'Coaching Text' },
+  { group: 'Sweat Pilates', value: 'pilates_coaching_media', label: 'Coaching Media' },
+  { group: 'Sweat Pilates', value: 'pilates_journey_title', label: 'Journey Title' },
+  { group: 'Sweat Pilates', value: 'pilates_journey_desc', label: 'Journey Text' },
+  { group: 'Sweat Pilates', value: 'pilates_journey_media', label: 'Journey Media' },
+  
+  { group: 'Sweat Bootcamp', value: 'bootcamp_hero_title', label: 'Hero Title' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_hero_subtitle', label: 'Hero Subtitle' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_hero_media', label: 'Hero Background Media' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_aspects_title', label: 'Aspects of Fitness Title' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_aspects_desc', label: 'Aspects of Fitness Text' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_foundation_title', label: 'Foundation Title' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_foundation_desc', label: 'Foundation Text' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_foundation_media', label: 'Foundation Media' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_athletic_title', label: 'Athletic Title' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_athletic_desc', label: 'Athletic Text' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_athletic_media', label: 'Athletic Media' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_dtp_title', label: 'DTP Title' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_dtp_desc', label: 'DTP Text' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_dtp_media', label: 'DTP Media' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_coaching_title', label: 'Coaching Title' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_coaching_desc', label: 'Coaching Text' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_coaching_media', label: 'Coaching Media' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_ecosystem_title', label: 'Ecosystem Title' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_ecosystem_desc', label: 'Ecosystem Text' },
+  { group: 'Sweat Bootcamp', value: 'bootcamp_ecosystem_media', label: 'Ecosystem Media' },
+
+  { group: 'Sweat Online', value: 'online_hero_title', label: 'Hero Title' },
+  { group: 'Sweat Online', value: 'online_hero_subtitle', label: 'Hero Subtitle' },
+  { group: 'Sweat Online', value: 'online_hero_media', label: 'Hero Background Media' },
+  { group: 'Sweat Online', value: 'online_problem_title', label: 'Promise Title' },
+  { group: 'Sweat Online', value: 'online_problem_desc', label: 'Promise Text' },
+  { group: 'Sweat Online', value: 'online_problem_media', label: 'Promise Media' },
+  { group: 'Sweat Online', value: 'online_pathways_title', label: 'Pathways Title' },
+  { group: 'Sweat Online', value: 'online_pathways_desc', label: 'Pathways Text' },
+  { group: 'Sweat Online', value: 'online_pathways_media_1', label: 'Pathways Media 1' },
+  { group: 'Sweat Online', value: 'online_pathways_media_2', label: 'Pathways Media 2' },
+  { group: 'Sweat Online', value: 'online_pathways_media_3', label: 'Pathways Media 3' },
+  { group: 'Sweat Online', value: 'online_pathways_media_4', label: 'Pathways Media 4' },
+  { group: 'Sweat Online', value: 'online_process_title', label: 'Process Title' },
+  { group: 'Sweat Online', value: 'online_process_desc', label: 'Process Text' },
+  { group: 'Sweat Online', value: 'online_app_title', label: 'App Experience Title' },
+  { group: 'Sweat Online', value: 'online_app_media', label: 'App Experience Media' },
   { group: 'Shop Page', value: 'shop_hero_title', label: 'Shop - Main Title' },
   { group: 'Shop Page', value: 'shop_promo_text', label: 'Shop - Promo Banner Text' },
   { group: 'Footer', value: 'footer_text', label: 'Footer Description Text' },
@@ -177,6 +230,29 @@ export default function AdminDashboard() {
     }
   };
 
+  const getPreviewUrl = () => {
+    let url = "http://localhost:5173";
+    if (activeTab === 'faqs') return url + '/faq';
+    if (activeTab === 'transformations') return url + '/transformations';
+    if (activeTab === 'content' && editingItem && editingItem.key) {
+      const option = cmsOptions.find(o => o.value === editingItem.key);
+      if (option) {
+        if (option.group.includes('Homepage')) url += '/';
+        else if (option.group.includes('About')) url += '/about';
+        else if (option.group.includes('Contact')) url += '/contact';
+        else if (option.group.includes('Transformations')) url += '/transformations';
+        else if (option.group.includes('Sweat Pilates')) url += '/pilates';
+        else if (option.group.includes('Sweat Bootcamp')) url += '/bootcamp';
+        else if (option.group.includes('Sweat Online')) url += '/online';
+        else if (option.group.includes('Shop')) url += '/shop';
+        
+        const sectionId = editingItem.key.replace(/_(title|subtitle|desc|text|media|image|copyright|address|email|phone).*$/, '');
+        url += `#${sectionId}`;
+      }
+    }
+    return url;
+  };
+
   const navItems = [
     { id: 'inbox', icon: <MessageCircle size={20} />, label: 'Inbox (Enquiries)' },
     { id: 'content', icon: <FileText size={20} />, label: 'Site Text & Media' },
@@ -191,9 +267,16 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside style={{ width: '280px', backgroundColor: '#000', color: '#fff', padding: '2rem', display: 'flex', flexDirection: 'column', boxShadow: '4px 0 24px rgba(0,0,0,0.1)', zIndex: 50 }}>
         
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '0.1em', marginBottom: '3rem', fontFamily: 'var(--font-serif)', lineHeight: 1.2 }}>
-          SWEAT FIT<br/><span style={{ color: '#888', fontSize: '1rem', letterSpacing: '0.15em' }}>CONTROL</span>
-        </h2>
+        <div style={{ marginBottom: '3rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <img 
+            src="/assets/logo_new.png" 
+            alt="SWEAT" 
+            style={{ height: '36px', width: 'auto', objectFit: 'contain', alignSelf: 'flex-start', filter: 'brightness(0) invert(1)' }} 
+          />
+          <div style={{ color: '#888', fontSize: '1rem', letterSpacing: '0.25em', fontWeight: 600, fontFamily: 'var(--font-serif)' }}>
+            CONTROL
+          </div>
+        </div>
         
         <nav style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {navItems.map(item => (
@@ -686,7 +769,7 @@ export default function AdminDashboard() {
                 </button>
               </div>
               <iframe 
-                src="http://localhost:5173" 
+                src={getPreviewUrl()} 
                 title="Live Website Preview" 
                 style={{ width: '100%', height: '100%', border: 'none' }} 
               />

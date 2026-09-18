@@ -26,7 +26,7 @@ export default function Transformations() {
     <div style={{ backgroundColor: '#111', minHeight: '100vh', color: 'white', fontFamily: 'var(--font-sans)', paddingBottom: '100px' }}>
       
       {/* Header Section */}
-      <section style={{ padding: '150px 20px 80px', textAlign: 'center', backgroundColor: '#000' }}>
+      <section id="transformations" style={{ padding: '150px 20px 80px', textAlign: 'center', backgroundColor: '#000' }}>
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

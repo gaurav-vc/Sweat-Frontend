@@ -19,18 +19,22 @@ const About = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-[#111111]">
-          {/* Subtle pattern or gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-10" />
+      <section id="about_hero" className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="/assets/Two_women_having_conversation_20260917133117.jpeg" 
+            alt="Our Story background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/80 z-10" />
         </div>
         
-        <div className="relative z-20 container mx-auto px-8 text-center mt-20">
+        <div className="relative z-20 container mx-auto px-8 text-center mt-20 flex flex-col items-center justify-center w-full">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-wide"
+            className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-wide text-center"
             style={{ fontFamily: 'var(--font-serif)', marginBottom: '1.5rem' }}
           >
             OUR STORY
@@ -39,7 +43,7 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto font-light leading-relaxed"
+            className="text-xl md:text-2xl text-gray-200 max-w-4xl text-center font-light leading-relaxed"
           >
             Welcome to Sweat Fit Wellness where your fitness journey begins and transformations happen!
           </motion.p>
@@ -64,7 +68,7 @@ const About = () => {
       </section>
 
       {/* Mission & Vision */}
-      <section className="bg-gray-50" style={{ padding: '6rem 0', backgroundColor: '#f9fafb' }}>
+      <section id="about_mission" className="bg-gray-50" style={{ padding: '6rem 0', backgroundColor: '#f9fafb' }}>
         <div className="container mx-auto px-8 max-w-5xl">
           <div className="grid md:grid-cols-2 items-start" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem' }}>
             <motion.div 

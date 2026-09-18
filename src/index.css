@@ -45,6 +45,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+p {
+  text-align: justify;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
   font-weight: 400;
@@ -70,6 +74,12 @@ button {
 
 .section-padding {
   padding: 100px 0;
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 60px 0;
+  }
 }
 
 .text-center {

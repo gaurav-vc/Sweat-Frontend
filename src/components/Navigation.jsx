@@ -68,9 +68,17 @@ const NavItem = ({ title, path, dropdownItems, scrolled, hasDarkHero }) => {
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname.replace(/\/$/, "") || "/";
-  const hasDarkHero = currentPath === '/' || currentPath === '/about';
+  
+  // List of paths that have a dark hero section at the top
+  const hasDarkHero = 
+    currentPath === '/' || 
+    currentPath === '/about' || 
+    currentPath === '/online' || 
+    currentPath === '/pilates' ||
+    currentPath === '/bootcamp';
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -82,17 +90,18 @@ export default function Navigation() {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[100] px-8 h-24 flex items-center transition-all duration-300 ${
-      scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100' : 'bg-transparent'
+      scrolled ? 'bg-white shadow-sm border-b border-gray-100' : 'bg-transparent'
     }`}>
       <div className="container mx-auto flex justify-between items-center w-full">
         {/* Logo */}
         <Link to="/" className="group flex flex-col items-start relative flex-shrink-0">
           <img 
-            src="/assets/logo.png" 
+            src="/assets/logo_new.png" 
             alt="SWEAT Logo" 
-            className="h-8 w-auto transition-transform duration-500 ease-out group-hover:scale-105"
+            className="h-9 w-auto transition-transform duration-500 ease-out group-hover:scale-105"
             style={{ 
               filter: (!scrolled && hasDarkHero) ? 'invert(1) brightness(2)' : 'none',
+              mixBlendMode: (!scrolled && hasDarkHero) ? 'screen' : 'multiply',
               objectFit: 'contain'
             }}
           />
@@ -175,14 +184,53 @@ export default function Navigation() {
         </div>
 
         {/* Mobile menu button */}
-        <div className="md:hidden">
-          <button className={`p-2 ${(!scrolled && hasDarkHero) ? 'text-white' : 'text-black'}`}>
-            <div className="w-6 h-0.5 bg-current mb-1.5"></div>
-            <div className="w-6 h-0.5 bg-current mb-1.5"></div>
-            <div className="w-6 h-0.5 bg-current"></div>
+        <div className="md:hidden flex items-center gap-4">
+          <Link to="/login" title="Admin Control Panel">
+            <Settings size={22} className={(!scrolled && hasDarkHero && !mobileMenuOpen) ? 'text-white' : 'text-black'} />
+          </Link>
+          <button 
+            className={`p-2 z-[110] relative ${(!scrolled && hasDarkHero && !mobileMenuOpen) ? 'text-white' : 'text-black'}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></div>
+            <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileMenuOpen ? 'opacity-0' : ''}`}></div>
+            <div className={`w-6 h-0.5 bg-current transition-all ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></div>
           </button>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="fixed inset-0 bg-white z-[105] flex flex-col pt-24 px-8 overflow-y-auto pb-10"
+          >
+            <div className="flex flex-col gap-6 text-2xl font-serif">
+              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-black hover:text-gray-600 transition-colors">Home</Link>
+              <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="text-black hover:text-gray-600 transition-colors">About Us</Link>
+              <Link to="/pilates" onClick={() => setMobileMenuOpen(false)} className="text-black hover:text-gray-600 transition-colors">Sweat Pilates</Link>
+              <Link to="/bootcamp" onClick={() => setMobileMenuOpen(false)} className="text-black hover:text-gray-600 transition-colors">Sweat Bootcamp</Link>
+              <Link to="/online" onClick={() => setMobileMenuOpen(false)} className="text-black hover:text-gray-600 transition-colors">Sweat Online</Link>
+              <Link to="/shop" onClick={() => setMobileMenuOpen(false)} className="text-black hover:text-gray-600 transition-colors">Shop</Link>
+              <Link to="/faq" onClick={() => setMobileMenuOpen(false)} className="text-black hover:text-gray-600 transition-colors">FAQ / More</Link>
+            </div>
+            
+            <div className="mt-auto pt-10">
+              <a 
+                href="/#approach" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="btn inline-block text-center w-full py-4 bg-black text-white text-sm tracking-widest uppercase font-semibold"
+              >
+                Experience the Studio
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

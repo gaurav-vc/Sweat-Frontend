@@ -88,7 +88,7 @@ export default function Contact() {
       </section>
 
       {/* Main Content */}
-      <section style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 20px', marginTop: '60px' }}>
+      <section id="contact" style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 20px', marginTop: '60px' }}>
         
         <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, letterSpacing: '0.1em', marginBottom: '40px', textTransform: 'uppercase' }}>
           {getText('contact_form_title', 'LEAVE US A NOTE')}
