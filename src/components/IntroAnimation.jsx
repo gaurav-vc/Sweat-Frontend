@@ -80,7 +80,7 @@ const IntroAnimation = ({ onComplete }) => {
           <video
             ref={videoRef}
             src="/assets/Final Sweat .mp4"
-            poster="/assets/poster.jpg"
+            poster="/assets/WhatsApp Image 2026-09-19 at 17.25.23.jpeg"
             playsInline
             onEnded={handleVideoEnd}
             style={{
