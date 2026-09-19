@@ -8,14 +8,15 @@ const IntroAnimation = ({ onComplete }) => {
 
   const handleAction = () => {
     if (!hasStarted) {
-      // First tap: Start the video with sound
+      // First tap: Start the video with sound!
       if (videoRef.current) {
+        videoRef.current.currentTime = 0; // Restart video
         videoRef.current.muted = false; // Ensure unmuted
+        videoRef.current.loop = false; // Let it play through and naturally trigger onEnded
         videoRef.current.play().then(() => {
           setHasStarted(true);
         }).catch(err => {
           console.error("Playback failed", err);
-          // Fallback if browser entirely blocks it
           setHasStarted(true); 
         });
       }
@@ -45,10 +46,12 @@ const IntroAnimation = ({ onComplete }) => {
   };
 
   const handleVideoEnd = () => {
-    setAnimationFinished(true);
-    setTimeout(() => {
-      onComplete();
-    }, 1000);
+    if (hasStarted) { // Only trigger if they actually started the real experience
+      setAnimationFinished(true);
+      setTimeout(() => {
+        onComplete();
+      }, 1000);
+    }
   };
 
   return (
@@ -73,76 +76,76 @@ const IntroAnimation = ({ onComplete }) => {
             overflow: 'hidden'
           }}
         >
-          {/* Responsive full-screen video */}
+          {/* Responsive full-screen video with a beautiful poster image */}
           <video
             ref={videoRef}
             src="/assets/Final Sweat .mp4"
+            poster="/assets/poster.jpg"
             playsInline
             onEnded={handleVideoEnd}
             style={{
               width: '100%',
               height: '100%',
-              objectFit: 'cover', // Ensures the video scales properly on mobile and desktop without stretching
-              display: 'block'
+              objectFit: 'cover',
+              display: 'block',
+              opacity: !hasStarted ? 0.6 : 1, // Dim the background slightly before they start
+              transition: 'opacity 1s ease-in-out'
             }}
           />
           
-          <button
+          <motion.button
             onClick={handleAction}
+            // Add a beautiful pulsing animation to encourage clicks when not started
+            animate={!hasStarted ? {
+              scale: [1, 1.03, 1],
+              boxShadow: [
+                "0 0 0 rgba(255,255,255,0)",
+                "0 0 20px rgba(255,255,255,0.15)",
+                "0 0 0 rgba(255,255,255,0)"
+              ]
+            } : {
+              scale: 1,
+              boxShadow: "none"
+            }}
+            transition={!hasStarted ? {
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            } : {}}
             style={{
               position: 'absolute',
-              // Center it initially, then drop it to the bottom once playing so it doesn't block the video
-              top: !hasStarted ? '50%' : 'auto',
+              top: !hasStarted ? '65%' : 'auto',
               bottom: !hasStarted ? 'auto' : '8%',
               left: '50%',
-              transform: !hasStarted ? 'translate(-50%, -50%)' : 'translate(-50%, 0)',
+              x: '-50%',
+              y: !hasStarted ? '-50%' : '0%',
               color: 'rgba(255,255,255,0.9)',
-              background: 'transparent',
-              border: !hasStarted ? '1px solid rgba(255,255,255,0.4)' : '1px solid rgba(255,255,255,0.2)',
+              background: !hasStarted ? 'rgba(0,0,0,0.3)' : 'transparent',
+              border: !hasStarted ? '1px solid rgba(255,255,255,0.5)' : '1px solid rgba(255,255,255,0.2)',
               padding: !hasStarted ? '16px 32px' : '12px 24px',
               borderRadius: '2px',
-              // Responsive font sizing using clamp
               fontSize: !hasStarted ? 'clamp(1rem, 3vw, 1.25rem)' : '0.75rem',
               fontFamily: 'Georgia, serif',
               letterSpacing: '0.15em',
               cursor: 'pointer',
               zIndex: 10,
               textTransform: 'uppercase',
-              transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
               fontWeight: 400,
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
-              whiteSpace: 'nowrap'
+              whiteSpace: 'nowrap',
+              backdropFilter: !hasStarted ? 'blur(4px)' : 'none',
             }}
-            onMouseEnter={(e) => {
-              e.target.style.color = '#ffffff';
-              e.target.style.borderColor = 'rgba(255,255,255,0.9)';
-              e.target.style.textShadow = '0 4px 20px rgba(0,0,0,0.5)';
-              e.target.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
-              
-              if (!hasStarted) {
-                e.target.style.transform = 'translate(-50%, -52%) scale(1.02)';
-              } else {
-                e.target.style.transform = 'translate(-50%, -2px) scale(1.02)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.color = 'rgba(255,255,255,0.9)';
-              e.target.style.textShadow = 'none';
-              e.target.style.boxShadow = 'none';
-              
-              if (!hasStarted) {
-                e.target.style.borderColor = 'rgba(255,255,255,0.4)';
-                e.target.style.transform = 'translate(-50%, -50%) scale(1)';
-              } else {
-                e.target.style.borderColor = 'rgba(255,255,255,0.2)';
-                e.target.style.transform = 'translate(-50%, 0) scale(1)';
-              }
+            whileHover={{
+              color: '#ffffff',
+              borderColor: 'rgba(255,255,255,0.9)',
+              textShadow: '0 4px 20px rgba(0,0,0,0.5)',
+              backgroundColor: !hasStarted ? 'rgba(0,0,0,0.5)' : 'transparent'
             }}
           >
             EXPERIENCE THE STUDIO <span style={{ fontFamily: 'sans-serif', fontSize: '1.2rem' }}>&rarr;</span>
-          </button>
+          </motion.button>
         </motion.div>
       )}
     </AnimatePresence>

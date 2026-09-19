@@ -41,18 +41,29 @@ const NavItem = ({ title, path, dropdownItems, scrolled, hasDarkHero }) => {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.2 }}
-              className="absolute left-0 mt-2 w-48 bg-white shadow-xl rounded-md overflow-hidden z-50"
+              initial={{ opacity: 0, y: 15, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className={`absolute left-0 mt-4 w-56 shadow-2xl rounded-xl overflow-hidden z-50 border backdrop-blur-xl ${
+                (!scrolled && hasDarkHero) 
+                  ? 'bg-black/80 border-white/20' 
+                  : 'bg-white/95 border-gray-100'
+              }`}
             >
               <div className="py-2 flex flex-col">
                 {dropdownItems.map((item, idx) => (
                   <Link 
                     key={idx} 
                     to={item.path}
-                    className="px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 hover:text-black transition-colors"
+                    style={{
+                      color: (!scrolled && hasDarkHero) ? 'rgba(255, 255, 255, 0.95)' : '#374151'
+                    }}
+                    className={`px-5 py-3 text-[0.95rem] font-medium tracking-wide transition-all duration-200 ${
+                      (!scrolled && hasDarkHero)
+                        ? 'hover:text-white hover:bg-white/20 hover:pl-6'
+                        : 'hover:text-black hover:bg-black/5 hover:pl-6'
+                    }`}
                   >
                     {item.label}
                   </Link>
