@@ -11,6 +11,8 @@ const cmsOptions = [
   { group: 'Homepage - Hero', value: 'home_hero_title', label: 'Hero Main Title (Large Text)' },
   { group: 'Homepage - Hero', value: 'home_hero_subtitle', label: 'Hero Subtitle' },
   { group: 'Homepage - Hero', value: 'home_hero_image', label: 'Hero Background Image' },
+  { group: 'Homepage - Hero', value: 'home_intro_video', label: 'Intro Animation Video' },
+  { group: 'Homepage - Hero', value: 'home_video_section', label: 'Homepage Video Section' },
   { group: 'Homepage - Approach', value: 'home_approach_title', label: 'Approach Section Title' },
   { group: 'Homepage - Approach', value: 'home_approach_text', label: 'Approach Section Text' },
   { group: 'Homepage - Approach', value: 'home_approach_image', label: 'Approach Section Image' },

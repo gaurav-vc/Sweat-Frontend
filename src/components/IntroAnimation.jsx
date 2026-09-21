@@ -1,10 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { fetchSiteContent } from '../api/cms';
 
 const IntroAnimation = ({ onComplete }) => {
   const [animationFinished, setAnimationFinished] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("/assets/Final Sweat .mp4");
   const videoRef = useRef(null);
+
+  useEffect(() => {
+    const loadCMS = async () => {
+      try {
+        const content = await fetchSiteContent();
+        const videoItem = content.find(item => item.key === 'home_intro_video');
+        if (videoItem) {
+          if (videoItem.file_upload) setVideoUrl(videoItem.file_upload);
+          else if (videoItem.value) setVideoUrl(videoItem.value);
+        }
+      } catch (err) {
+        console.error("Failed to load intro video from CMS:", err);
+      }
+    };
+    loadCMS();
+  }, []);
 
   const handleAction = () => {
     if (!hasStarted) {
@@ -79,7 +97,7 @@ const IntroAnimation = ({ onComplete }) => {
           {/* Responsive full-screen video with a beautiful poster image */}
           <video
             ref={videoRef}
-            src="/assets/Final Sweat .mp4"
+            src={videoUrl}
             poster="/assets/WhatsApp Image 2026-09-19 at 17.25.23.jpeg"
             playsInline
             onEnded={handleVideoEnd}

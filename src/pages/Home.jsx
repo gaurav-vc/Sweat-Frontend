@@ -86,7 +86,7 @@ const HeroSection = ({ getText, getMedia }) => {
   );
 };
 
-const VideoSection = () => {
+const VideoSection = ({ getMedia }) => {
   return (
     <section style={{ position: 'relative', width: '100%', minHeight: '90vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
       <motion.div
@@ -96,7 +96,7 @@ const VideoSection = () => {
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -2 }}
       >
         <video 
-          src="/assets/default.mp4" 
+          src={getMedia('home_video_section', "/assets/default.mp4")} 
           autoPlay 
           loop 
           muted 
@@ -273,10 +273,10 @@ const JourneySection = ({ getText, getMedia }) => {
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               {[
                 { icon: '⭐', label: 'Training' },
-                { icon: '♡', label: 'Nutrição' },
-                { icon: '🌱', label: 'Recuperação' },
-                { icon: '💧', label: 'Movimento' },
-                { icon: '✓', label: 'Consciência' }
+                { icon: '♡', label: 'Nutrition' },
+                { icon: '🌱', label: 'Recovery' },
+                { icon: '💧', label: 'Movement' },
+                { icon: '✓', label: 'Consistency' }
               ].map(step => (
                 <div key={step.label} className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem', opacity: 0.6 }}>{step.icon}</div>
@@ -564,7 +564,7 @@ export default function Home() {
   return (
     <main>
       <HeroSection getText={getText} getMedia={getMedia} />
-      <VideoSection />
+      <VideoSection getMedia={getMedia} />
       <ApproachSection getText={getText} getMedia={getMedia} />
       <AssessmentSection getText={getText} getMedia={getMedia} />
       <JourneySection getText={getText} getMedia={getMedia} />
