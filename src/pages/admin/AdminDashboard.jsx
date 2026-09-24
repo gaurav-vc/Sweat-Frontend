@@ -271,7 +271,7 @@ export default function AdminDashboard() {
         
         <div style={{ marginBottom: '3rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <img 
-            src="/assets/logo_new.png" 
+            src="/assets/Screenshot_2026-09-24_132335-removebg-preview.png" 
             alt="SWEAT" 
             style={{ height: '36px', width: 'auto', objectFit: 'contain', alignSelf: 'flex-start', filter: 'brightness(0) invert(1)' }} 
           />

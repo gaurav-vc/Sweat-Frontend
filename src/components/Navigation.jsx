@@ -107,7 +107,7 @@ export default function Navigation() {
         {/* Logo */}
         <Link to="/" className="group flex flex-col items-start relative flex-shrink-0">
           <img 
-            src="/assets/logo_new.png" 
+            src="/assets/Screenshot_2026-09-24_132335-removebg-preview.png" 
             alt="SWEAT Logo" 
             className="h-9 w-auto transition-transform duration-500 ease-out group-hover:scale-105"
             style={{ 

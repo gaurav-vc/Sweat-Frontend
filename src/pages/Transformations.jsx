@@ -23,22 +23,22 @@ export default function Transformations() {
   }, []);
 
   return (
-    <div style={{ backgroundColor: '#111', minHeight: '100vh', color: 'white', fontFamily: 'var(--font-sans)', paddingBottom: '100px' }}>
+    <div style={{ backgroundColor: '#f9f9f9', minHeight: '100vh', color: '#000', fontFamily: 'var(--font-sans)', paddingBottom: '100px' }}>
       
       {/* Header Section */}
-      <section id="transformations" style={{ padding: '150px 20px 80px', textAlign: 'center', backgroundColor: '#000' }}>
+      <section id="transformations" style={{ padding: '150px 20px 80px', textAlign: 'center', backgroundColor: '#ffffff' }}>
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <p style={{ fontSize: '0.85rem', letterSpacing: '0.2em', color: '#9ca3af', marginBottom: '1rem', textTransform: 'uppercase' }}>
+          <p style={{ fontSize: '0.85rem', letterSpacing: '0.2em', color: '#4b5563', marginBottom: '1rem', textTransform: 'uppercase' }}>
             Real Results
           </p>
           <h1 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: 800, marginBottom: '1.5rem', letterSpacing: '0.02em', lineHeight: 1.1 }}>
             TRANSFORMATIONS
           </h1>
-          <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', color: '#d1d5db', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', color: '#374151', lineHeight: 1.6 }}>
             Witness the journey. Discover how SWEAT FIT helps our members achieve their ultimate strength, mobility, and confidence goals.
           </p>
         </motion.div>
@@ -47,7 +47,7 @@ export default function Transformations() {
       {/* Grid Section */}
       <section style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px', marginTop: '40px' }}>
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0', color: '#9ca3af' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0', color: '#4b5563' }}>
             <Loader2 size={40} className="animate-spin" />
           </div>
         ) : transformations.length === 0 ? (
@@ -63,7 +63,7 @@ export default function Transformations() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ y: -10 }}
-                style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', backgroundColor: '#1a1a1a', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
+                style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', backgroundColor: '#ffffff', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1)' }}
                 onClick={() => setActiveVideo(item.video_upload)}
               >
                 {/* Video Thumbnail / Preview */}

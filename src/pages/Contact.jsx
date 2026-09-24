@@ -72,7 +72,7 @@ export default function Contact() {
     <div style={{ backgroundColor: '#f9f9f9', minHeight: '100vh', fontFamily: 'var(--font-sans)', paddingBottom: '100px' }}>
       
       {/* Header Section */}
-      <section style={{ backgroundColor: '#1a1a1a', color: 'white', padding: '120px 20px 80px', textAlign: 'center' }}>
+      <section style={{ backgroundColor: '#ffffff', color: '#000', padding: '120px 20px 80px', textAlign: 'center' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,7 +81,7 @@ export default function Contact() {
           <h1 style={{ fontSize: '3rem', fontWeight: 700, marginBottom: '1.5rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
             {getText('contact_title', 'CONTACT US')}
           </h1>
-          <p style={{ fontSize: '1.1rem', maxWidth: '700px', margin: '0 auto', opacity: 0.9, lineHeight: 1.6, letterSpacing: '0.05em' }}>
+          <p style={{ fontSize: '1.1rem', maxWidth: '700px', margin: '0 auto', color: '#374151', lineHeight: 1.6, letterSpacing: '0.05em' }}>
             {getText('contact_subtitle', "Have a question or something to share? Let us know by dropping us a message, and we'll get back to you as soon as possible.")}
           </p>
         </motion.div>
