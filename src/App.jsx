@@ -11,6 +11,7 @@ import SweatOnline from './pages/SweatOnline';
 import SweatPilates from './pages/SweatPilates';
 import SweatBootcamp from './pages/SweatBootcamp';
 import Placeholder from './pages/Placeholder';
+import StudioVisitModal from './components/StudioVisitModal';
 import './index.css';
 
 const fadeUpParams = {
@@ -20,7 +21,7 @@ const fadeUpParams = {
   transition: { duration: 0.8, ease: "easeOut" }
 };
 
-const Footer = () => {
+const Footer = ({ onOpenModal }) => {
   return (
     <footer style={{ backgroundColor: '#ebe8e2', color: 'var(--color-text-dark)', padding: '100px 0 50px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
@@ -30,11 +31,11 @@ const Footer = () => {
         <motion.p {...fadeUpParams} style={{ color: 'rgba(0,0,0,0.6)', marginBottom: '3rem', fontSize: '1.1rem', textAlign: 'center' }}>
           Private visits are available by appointment.
         </motion.p>
-        <motion.a 
-          href="/#approach" 
+        <motion.button 
+          onClick={() => window.dispatchEvent(new CustomEvent('open-studio-modal'))}
           whileHover={{ scale: 1.05 }} 
           whileTap={{ scale: 0.95 }} 
-          className="btn" 
+          className="btn cursor-pointer" 
           style={{ 
             display: 'inline-block', 
             marginBottom: '6rem', 
@@ -47,8 +48,8 @@ const Footer = () => {
             borderRadius: '2px'
           }}
         >
-          REQUEST A PRIVATE VISIT →
-        </motion.a>
+          EXPERIENCE THE STUDIO →
+        </motion.button>
         
         <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', fontSize: '0.8rem', letterSpacing: '0.1em', opacity: 0.5, fontWeight: 500, color: 'var(--color-text-dark)' }}>
           <span>MUMBAI</span>
@@ -65,9 +66,13 @@ import Login from './pages/Login';
 const Layout = ({ children }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname === '/login';
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   // Component to handle scrolling to hash in URL
   React.useEffect(() => {
+    const handleOpen = () => setIsModalOpen(true);
+    window.addEventListener('open-studio-modal', handleOpen);
+
     if (location.hash) {
       const id = location.hash.substring(1);
       setTimeout(() => {
@@ -77,6 +82,10 @@ const Layout = ({ children }) => {
         }
       }, 500);
     }
+    
+    return () => {
+      window.removeEventListener('open-studio-modal', handleOpen);
+    };
   }, [location.hash, location.pathname]);
 
   return (
@@ -86,6 +95,7 @@ const Layout = ({ children }) => {
         {children}
       </div>
       {!isAdminRoute && <Footer />}
+      <StudioVisitModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

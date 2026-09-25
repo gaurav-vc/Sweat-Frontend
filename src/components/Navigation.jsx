@@ -45,25 +45,46 @@ const NavItem = ({ title, path, dropdownItems, scrolled, hasDarkHero }) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className={`absolute left-0 mt-4 w-56 shadow-2xl rounded-xl overflow-hidden z-50 border backdrop-blur-xl ${
-                (!scrolled && hasDarkHero) 
-                  ? 'bg-black/80 border-white/20' 
-                  : 'bg-white/95 border-gray-100'
-              }`}
+              style={{
+                position: 'absolute',
+                left: '-1rem',
+                top: '100%',
+                marginTop: '16px',
+                width: '240px',
+                backgroundColor: (!scrolled && hasDarkHero) ? 'rgba(15, 15, 15, 0.95)' : 'rgba(255, 255, 255, 0.98)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                boxShadow: '0 20px 40px -10px rgba(0,0,0,0.3)',
+                borderRadius: '8px',
+                border: (!scrolled && hasDarkHero) ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.05)',
+                overflow: 'hidden',
+                zIndex: 50,
+                padding: '12px 0'
+              }}
             >
-              <div className="py-2 flex flex-col">
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {dropdownItems.map((item, idx) => (
                   <Link 
                     key={idx} 
                     to={item.path}
                     style={{
-                      color: (!scrolled && hasDarkHero) ? 'rgba(255, 255, 255, 0.95)' : '#374151'
+                      color: (!scrolled && hasDarkHero) ? '#ffffff' : '#1a1a1a',
+                      padding: '14px 24px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase',
+                      transition: 'all 0.3s ease',
+                      display: 'block'
                     }}
-                    className={`px-5 py-3 text-[0.95rem] font-medium tracking-wide transition-all duration-200 ${
-                      (!scrolled && hasDarkHero)
-                        ? 'hover:text-white hover:bg-white/20 hover:pl-6'
-                        : 'hover:text-black hover:bg-black/5 hover:pl-6'
-                    }`}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = (!scrolled && hasDarkHero) ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)';
+                      e.currentTarget.style.paddingLeft = '32px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.paddingLeft = '24px';
+                    }}
                   >
                     {item.label}
                   </Link>
@@ -231,13 +252,15 @@ export default function Navigation() {
             </div>
             
             <div className="mt-auto pt-10">
-              <a 
-                href="/#approach" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="btn inline-block text-center w-full py-4 bg-black text-white text-sm tracking-widest uppercase font-semibold"
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  window.dispatchEvent(new CustomEvent('open-studio-modal'));
+                }}
+                className="btn inline-block text-center w-full py-4 bg-black text-white text-sm tracking-widest uppercase font-semibold cursor-pointer"
               >
                 Experience the Studio
-              </a>
+              </button>
             </div>
           </motion.div>
         )}

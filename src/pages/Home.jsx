@@ -79,7 +79,7 @@ const HeroSection = ({ getText, getMedia }) => {
           <p style={{ fontSize: '1.2rem', marginBottom: '3rem', opacity: 0.9, maxWidth: '400px' }}>
             {getText('home_hero_subtitle', 'A considered approach to strength, movement and physical performance at SWEAT FIT.')}
           </p>
-          <a href="#approach" className="btn btn-light" style={{ padding: '15px 30px', fontSize: '0.85rem' }}>EXPERIENCE THE STUDIO →</a>
+          <button onClick={() => window.dispatchEvent(new CustomEvent('open-studio-modal'))} className="btn btn-light cursor-pointer" style={{ padding: '15px 30px', fontSize: '0.85rem' }}>EXPERIENCE THE STUDIO →</button>
         </motion.div>
       </div>
     </section>

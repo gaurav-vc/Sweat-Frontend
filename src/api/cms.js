@@ -37,6 +37,11 @@ export const submitEnquiry = async (payload) => {
   return response.data;
 };
 
+export const submitStudioVisit = async (payload) => {
+  const response = await api.post('cms/studio-visits/', payload);
+  return response.data;
+};
+
 export const fetchTransformations = async () => {
   const response = await api.get('cms/transformations/');
   return response.data;
