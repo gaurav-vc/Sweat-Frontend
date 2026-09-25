@@ -190,10 +190,7 @@ const About = () => {
             <p className="text-xl text-gray-600" style={{ marginBottom: '3rem' }}>
               Together, let’s break barriers, celebrate progress, and redefine what’s possible.
             </p>
-            <button className="group inline-flex items-center gap-3 text-white px-8 py-4 rounded-full font-bold tracking-wide hover:scale-105 transition-transform duration-300" style={{ backgroundColor: 'black' }}>
-              START YOUR JOURNEY TODAY
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-            </button>
+
           </motion.div>
         </div>
       </section>

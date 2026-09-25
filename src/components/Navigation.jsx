@@ -148,41 +148,41 @@ export default function Navigation() {
             path="/pilates" 
             scrolled={scrolled}
             hasDarkHero={hasDarkHero}
-            dropdownItems={[
+            /* dropdownItems={[
               { label: 'Classes', path: '/pilates/classes' },
               { label: 'Schedule', path: '/pilates/schedule' },
               { label: 'Instructors', path: '/pilates/instructors' }
-            ]} 
+            ]} */
           />
           <NavItem 
             title="Sweat Bootcamp" 
             path="/bootcamp" 
             scrolled={scrolled}
             hasDarkHero={hasDarkHero}
-            dropdownItems={[
+            /* dropdownItems={[
               { label: 'Programs', path: '/bootcamp/programs' },
               { label: 'Results', path: '/bootcamp/results' }
-            ]} 
+            ]} */
           />
           <NavItem 
             title="Sweat Online" 
             path="/online" 
             scrolled={scrolled}
             hasDarkHero={hasDarkHero}
-            dropdownItems={[
+            /* dropdownItems={[
               { label: 'App', path: '/online/app' },
               { label: 'Live Sessions', path: '/online/live' }
-            ]} 
+            ]} */
           />
           <NavItem 
             title="Shop" 
             path="/shop" 
             scrolled={scrolled}
             hasDarkHero={hasDarkHero}
-            dropdownItems={[
+            /* dropdownItems={[
               { label: 'Apparel', path: '/shop/apparel' },
               { label: 'Equipment', path: '/shop/equipment' }
-            ]} 
+            ]} */
           />
           <NavItem 
             title="More" 
@@ -192,7 +192,7 @@ export default function Navigation() {
             dropdownItems={[
               { label: 'Transformations', path: '/transformations' },
               { label: 'Contact', path: '/contact' },
-              { label: 'Careers', path: '/careers' },
+              /* { label: 'Careers', path: '/careers' }, */
               { label: 'FAQ', path: '/faq' }
             ]} 
           />
