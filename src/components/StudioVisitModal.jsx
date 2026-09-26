@@ -4,7 +4,7 @@ import { X, CheckCircle } from 'lucide-react';
 import { submitStudioVisit } from '../api/cms';
 
 const goalsList = [
-  "Weight loss", "Build muscle", "Improve mobility", 
+  "Weight loss", "Build muscle", "Improve mobility",
   "General fitness", "Athletic conditioning", "Post-rehab"
 ];
 
@@ -91,7 +91,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
       if (name === 'state') {
@@ -128,10 +128,10 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const requiredFields = ['first_name', 'last_name', 'email', 'contact_number', 'branch_name', 'interested_in'];
     const isAnyRequiredEmpty = requiredFields.some(field => !formData[field] || !formData[field].trim());
-    
+
     if (isAnyRequiredEmpty) {
       setError('Please fill the mandatory details!!');
       return;
@@ -146,6 +146,25 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
         ...formData,
         contact_number: `+91 ${formData.contact_number}`
       });
+
+      const tenantSlug = 'sweat';
+      // Automatically uses local URL in development and live URL in production
+      const crmBackendUrl = import.meta.env.MODE === 'development'
+        ? 'http://localhost:8000'
+        : 'https://sweatfit.vibesandbox.live';
+
+      await fetch(`${crmBackendUrl}/api/v1/webhooks/leads/${tenantSlug}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          email: formData.email,
+          phone: `+91 ${formData.contact_number}`,
+          lead_source: 'WEBSITE'
+        })
+      });
+
       setSuccess(true);
       setTimeout(() => {
         handleClose();
@@ -163,6 +182,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
       setLoading(false);
     }
   };
+
 
   return (
     <AnimatePresence>
@@ -200,7 +220,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
               </div>
             ) : (
               <form noValidate onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, width: '100%' }}>
-                
+
                 <div className="studio-modal-header">
                   <h2 style={{ fontSize: '42px', fontFamily: 'var(--font-serif)', margin: '0 0 12px 0', letterSpacing: '-0.02em', lineHeight: '1' }}>EXPERIENCE THE STUDIO</h2>
                   <p style={{ fontSize: '15px', color: '#666', margin: 0 }}>
@@ -209,7 +229,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
                 </div>
 
                 <div className="studio-modal-body">
-                  
+
                   <div>
                     <h3 style={{ fontSize: '13px', fontWeight: 'bold', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '40px', paddingBottom: '16px', borderBottom: '1px solid #000', display: 'inline-block' }}>
                       01. Contact Details
@@ -230,7 +250,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
                         <input required type="email" name="email" value={formData.email} onChange={handleChange} placeholder="rahul.sharma@gmail.com" className="studio-input" style={{ borderColor: emailError ? '#ef4444' : '#e0e0e0' }} />
                         {emailError && <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '8px', margin: 0 }}>{emailError}</p>}
                       </div>
-                      
+
                       <div className="studio-input-group">
                         <label className="studio-label">Contact Number *</label>
                         <div style={{ display: 'flex', width: '100%' }}>
@@ -299,7 +319,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
                           ))}
                         </select>
                       </div>
-                      
+
                       <div className="studio-input-group">
                         <label className="studio-label">City / Area</label>
                         <select name="location_area" value={formData.location_area} onChange={handleChange} disabled={!formData.state} className="studio-input" style={{ appearance: 'none', cursor: formData.state ? 'pointer' : 'not-allowed', opacity: formData.state ? 1 : 0.6 }}>
