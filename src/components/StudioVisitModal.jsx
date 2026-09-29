@@ -78,6 +78,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
     birthday: '',
     branch_name: '',
     interested_in: '',
+    pincode: '',
     country: 'India',
     state: '',
     location_area: '',
@@ -88,6 +89,8 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [emailError, setEmailError] = useState('');
+  const [pincodeLoading, setPincodeLoading] = useState(false);
+  const [pincodeError, setPincodeError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -104,6 +107,38 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
     if (name === 'email') {
       setEmailError('');
     }
+    if (name === 'pincode') {
+      setPincodeError('');
+      // Auto-fetch when 6 digits are entered
+      if (/^\d{6}$/.test(value)) {
+        fetchLocationFromPincode(value);
+      }
+    }
+  };
+
+  const fetchLocationFromPincode = async (pincode) => {
+    setPincodeLoading(true);
+    setPincodeError('');
+    try {
+      const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+      const data = await response.json();
+      if (data?.[0]?.Status === 'Success' && data[0].PostOffice?.length > 0) {
+        const postOffice = data[0].PostOffice[0];
+        setFormData((prev) => ({
+          ...prev,
+          country: postOffice.Country || 'India',
+          state: postOffice.State || '',
+          location_area: postOffice.District || ''
+        }));
+      } else {
+        setPincodeError('Invalid pincode. Please check and try again.');
+      }
+    } catch (err) {
+      console.warn('Pincode lookup failed:', err);
+      setPincodeError('Could not fetch location. Please fill manually.');
+    } finally {
+      setPincodeLoading(false);
+    }
   };
 
   const handleGoalToggle = (goal) => {
@@ -119,14 +154,17 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
   };
 
   const validateEmail = (email) => {
-    if (!email.toLowerCase().endsWith('@gmail.com')) {
-      setEmailError('Only Gmail addresses are allowed.');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address.');
       return false;
     }
+    setEmailError('');
     return true;
   };
 
-  const handleSubmit = async (e) => {
+
+    const handleSubmit = async (e) => {
     e.preventDefault();
 
     const requiredFields = ['first_name', 'last_name', 'email', 'contact_number', 'branch_name', 'interested_in'];
@@ -142,29 +180,51 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
     setLoading(true);
     setError(null);
     try {
+      // 1. Primary Action — Save to live Django backend (sweatfit.vibesandbox.live)
       await submitStudioVisit({
         ...formData,
         contact_number: `+91 ${formData.contact_number}`
       });
 
-      const tenantSlug = 'sweat';
-      // Automatically uses local URL in development and live URL in production
-      const crmBackendUrl = import.meta.env.MODE === 'development'
-        ? 'http://localhost:8000'
-        : 'https://sweatfit.vibesandbox.live';
+      // 2. CRM Webhook — Send ALL fields to CRM (fails silently if CRM is offline)
+      try {
+        const tenantSlug = 'sweat';
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const crmBackendUrl = isLocalhost ? 'http://localhost:8000' : null; // CRM not live yet — skip in production
 
-      await fetch(`${crmBackendUrl}/api/v1/webhooks/leads/${tenantSlug}/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          email: formData.email,
-          phone: `+91 ${formData.contact_number}`,
-          lead_source: 'WEBSITE'
-        })
-      });
+        if (crmBackendUrl) {
+          await fetch(`${crmBackendUrl}/api/v1/webhooks/leads/${tenantSlug}/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              // Contact details
+              first_name: formData.first_name,
+              last_name: formData.last_name,
+              email: formData.email,
+              phone: `+91 ${formData.contact_number}`,
+              // Interest & location
+              branch_name: formData.branch_name,
+              interested_in: formData.interested_in,
+              goal: formData.goal,
+              // Location fields
+              pincode: formData.pincode,
+              country: formData.country,
+              state: formData.state,
+              location_area: formData.location_area,
+              // Personal details
+              gender: formData.gender,
+              birthday: formData.birthday,
+              // Lead source
+              lead_source: 'WEBSITE',
+            })
+          });
+        }
+      } catch (crmError) {
+        // CRM webhook fails silently — form submission still succeeds
+        console.warn('CRM Webhook connection failed, but proceeding:', crmError);
+      }
 
+      // 3. Always show success
       setSuccess(true);
       setTimeout(() => {
         handleClose();
@@ -172,7 +232,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
         setFormData({
           first_name: '', last_name: '', email: '', contact_number: '',
           gender: '', birthday: '', branch_name: '', interested_in: '',
-          country: 'India', state: '', location_area: '', goal: ''
+          pincode: '', country: 'India', state: '', location_area: '', goal: ''
         });
       }, 3000);
     } catch (err) {
@@ -182,6 +242,7 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
       setLoading(false);
     }
   };
+
 
 
   return (
@@ -246,8 +307,8 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
                       </div>
 
                       <div className="studio-input-group">
-                        <label className="studio-label">Email Address (Gmail Only) *</label>
-                        <input required type="email" name="email" value={formData.email} onChange={handleChange} placeholder="rahul.sharma@gmail.com" className="studio-input" style={{ borderColor: emailError ? '#ef4444' : '#e0e0e0' }} />
+                        <label className="studio-label">Email Address *</label>
+                        <input required type="email" name="email" value={formData.email} onChange={handleChange} placeholder="rahul.sharma@example.com" className="studio-input" style={{ borderColor: emailError ? '#ef4444' : '#e0e0e0' }} />
                         {emailError && <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '8px', margin: 0 }}>{emailError}</p>}
                       </div>
 
@@ -286,9 +347,9 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
                         <label className="studio-label">Branch Name *</label>
                         <select required name="branch_name" value={formData.branch_name} onChange={handleChange} className="studio-input" style={{ appearance: 'none', cursor: 'pointer' }}>
                           <option value="">Select branch</option>
-                          <option value="Downtown Flagship">Downtown Flagship</option>
-                          <option value="Bandra Studio">Bandra Studio</option>
-                          <option value="South Mumbai">South Mumbai</option>
+                          <option value="Goregaon">Goregaon</option>
+                          <option value="Andheri">Andheri</option>
+                          <option value="Malad">Malad</option>
                         </select>
                       </div>
                       <div className="studio-input-group">
@@ -302,32 +363,39 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
                       </div>
 
                       <div className="studio-input-group">
+                        <label className="studio-label">Pincode</label>
+                        <div style={{ position: 'relative' }}>
+                          <input
+                            name="pincode"
+                            value={formData.pincode}
+                            onChange={handleChange}
+                            placeholder="e.g. 400001"
+                            maxLength={6}
+                            className="studio-input"
+                            style={{ borderColor: pincodeError ? '#ef4444' : '#e0e0e0' }}
+                          />
+                          {pincodeLoading && (
+                            <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#888' }}>
+                              Fetching...
+                            </span>
+                          )}
+                        </div>
+                        {pincodeError && <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '8px', margin: 0 }}>{pincodeError}</p>}
+                        {!pincodeError && <p style={{ fontSize: '11px', color: '#999', marginTop: '6px', margin: 0 }}>Enter 6-digit pincode to auto-fill location</p>}
+                      </div>
+
+                      <div className="studio-input-group">
                         <label className="studio-label">Country</label>
-                        <select name="country" value={formData.country} onChange={handleChange} className="studio-input" style={{ appearance: 'none', cursor: 'pointer' }}>
-                          <option value="India">India</option>
-                          <option value="United States">United States</option>
-                          <option value="United Kingdom">United Kingdom</option>
-                          <option value="UAE">UAE</option>
-                        </select>
+                        <input name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="studio-input" readOnly style={{ backgroundColor: '#f8f8f8', cursor: 'default' }} />
                       </div>
                       <div className="studio-input-group">
                         <label className="studio-label">State</label>
-                        <select name="state" value={formData.state} onChange={handleChange} className="studio-input" style={{ appearance: 'none', cursor: 'pointer' }}>
-                          <option value="">Select state</option>
-                          {indianStates.map(state => (
-                            <option key={state} value={state}>{state}</option>
-                          ))}
-                        </select>
+                        <input name="state" value={formData.state} onChange={handleChange} placeholder="Auto-filled from pincode" className="studio-input" />
                       </div>
 
                       <div className="studio-input-group">
                         <label className="studio-label">City / Area</label>
-                        <select name="location_area" value={formData.location_area} onChange={handleChange} disabled={!formData.state} className="studio-input" style={{ appearance: 'none', cursor: formData.state ? 'pointer' : 'not-allowed', opacity: formData.state ? 1 : 0.6 }}>
-                          <option value="">Select city / area</option>
-                          {formData.state && stateCityMap[formData.state].map(city => (
-                            <option key={city} value={city}>{city}</option>
-                          ))}
-                        </select>
+                        <input name="location_area" value={formData.location_area} onChange={handleChange} placeholder="Auto-filled from pincode" className="studio-input" />
                       </div>
                     </div>
 
