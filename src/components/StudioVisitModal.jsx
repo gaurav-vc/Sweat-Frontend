@@ -211,11 +211,27 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
     setLoading(true);
     setError(null);
     try {
-      // 1. Primary Action — Save to live Django backend (sweatfit.vibesandbox.live)
-      await submitStudioVisit({
-        ...formData,
-        contact_number: `+91 ${formData.contact_number}`
-      });
+      // 1. Primary Action — Save to Django backend (falls back to live endpoint if local port 8000 is occupied by CRM)
+      try {
+        await submitStudioVisit({
+          ...formData,
+          contact_number: `+91 ${formData.contact_number}`
+        });
+      } catch (cmsErr) {
+        console.warn('CMS submission via client.js failed (e.g. port 8000 used by CRM), attempting direct live CMS endpoint:', cmsErr);
+        try {
+          await fetch('https://sweatfit.vibesandbox.live/api/cms/studio-visits/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...formData,
+              contact_number: `+91 ${formData.contact_number}`
+            })
+          });
+        } catch (liveErr) {
+          console.warn('Direct live CMS post also failed:', liveErr);
+        }
+      }
 
       // 2. CRM Webhook — Send ALL fields to CRM (fails silently if CRM is offline)
       try {
