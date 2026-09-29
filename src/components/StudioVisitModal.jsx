@@ -95,13 +95,10 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => {
-      const newData = { ...prev, [name]: value };
-      if (name === 'state') {
-        newData.location_area = ''; // Reset city when state changes
-      }
-      return newData;
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
     setError(null);
     if (name === 'email') {
@@ -120,22 +117,56 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
     setPincodeLoading(true);
     setPincodeError('');
     try {
-      const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-      const data = await response.json();
-      if (data?.[0]?.Status === 'Success' && data[0].PostOffice?.length > 0) {
-        const postOffice = data[0].PostOffice[0];
-        setFormData((prev) => ({
-          ...prev,
-          country: postOffice.Country || 'India',
-          state: postOffice.State || '',
-          location_area: postOffice.District || ''
-        }));
-      } else {
-        setPincodeError('Invalid pincode. Please check and try again.');
+      // Primary: zippopotam (CORS enabled, fast ~100ms)
+      const res = await fetch(`https://api.zippopotam.us/in/${pincode}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.places?.length > 0) {
+          const place = data.places[0];
+          const rawState = place.state || '';
+          const matchedState = indianStates.find(
+            (s) =>
+              s.toLowerCase() === rawState.toLowerCase() ||
+              rawState.toLowerCase().includes(s.toLowerCase()) ||
+              s.toLowerCase().includes(rawState.toLowerCase())
+          ) || rawState;
+
+          setFormData((prev) => ({
+            ...prev,
+            country: 'India',
+            state: matchedState,
+            location_area: place['place name'] || prev.location_area,
+          }));
+          return;
+        }
       }
+
+      // Fallback: postalpincode
+      try {
+        const fallbackRes = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+        const fallbackData = await fallbackRes.json();
+        if (fallbackData?.[0]?.Status === 'Success' && fallbackData[0].PostOffice?.length > 0) {
+          const po = fallbackData[0].PostOffice[0];
+          const matchedState = indianStates.find(
+            (s) =>
+              s.toLowerCase() === (po.State || '').toLowerCase() ||
+              (po.State || '').toLowerCase().includes(s.toLowerCase())
+          ) || po.State;
+
+          setFormData((prev) => ({
+            ...prev,
+            country: 'India',
+            state: matchedState,
+            location_area: po.District || po.Name || prev.location_area,
+          }));
+          return;
+        }
+      } catch (_) {}
+
+      setPincodeError('Pincode not found. Please select state manually.');
     } catch (err) {
-      console.warn('Pincode lookup failed:', err);
-      setPincodeError('Could not fetch location. Please fill manually.');
+      console.warn('Pincode lookup error:', err);
+      setPincodeError('Could not fetch location. Please select state manually.');
     } finally {
       setPincodeLoading(false);
     }
@@ -363,7 +394,9 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
                       </div>
 
                       <div className="studio-input-group">
-                        <label className="studio-label">Pincode</label>
+                        <label className="studio-label">
+                          Pincode <span style={{ fontSize: '11px', color: '#888', fontWeight: 'normal', textTransform: 'none' }}>(Auto-fill)</span>
+                        </label>
                         <div style={{ position: 'relative' }}>
                           <input
                             name="pincode"
@@ -380,22 +413,41 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
                             </span>
                           )}
                         </div>
-                        {pincodeError && <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '8px', margin: 0 }}>{pincodeError}</p>}
-                        {!pincodeError && <p style={{ fontSize: '11px', color: '#999', marginTop: '6px', margin: 0 }}>Enter 6-digit pincode to auto-fill location</p>}
+                        {pincodeError && <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '6px', margin: 0 }}>{pincodeError}</p>}
                       </div>
 
                       <div className="studio-input-group">
                         <label className="studio-label">Country</label>
                         <input name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="studio-input" readOnly style={{ backgroundColor: '#f8f8f8', cursor: 'default' }} />
                       </div>
+
                       <div className="studio-input-group">
                         <label className="studio-label">State</label>
-                        <input name="state" value={formData.state} onChange={handleChange} placeholder="Auto-filled from pincode" className="studio-input" />
+                        <select
+                          name="state"
+                          value={formData.state}
+                          onChange={handleChange}
+                          className="studio-input"
+                          style={{ appearance: 'none', cursor: 'pointer' }}
+                        >
+                          <option value="">Select state</option>
+                          {indianStates.map((state) => (
+                            <option key={state} value={state}>
+                              {state}
+                            </option>
+                          ))}
+                        </select>
                       </div>
 
                       <div className="studio-input-group">
                         <label className="studio-label">City / Area</label>
-                        <input name="location_area" value={formData.location_area} onChange={handleChange} placeholder="Auto-filled from pincode" className="studio-input" />
+                        <input
+                          name="location_area"
+                          value={formData.location_area}
+                          onChange={handleChange}
+                          placeholder="e.g. Bandra West, Mumbai"
+                          className="studio-input"
+                        />
                       </div>
                     </div>
 
