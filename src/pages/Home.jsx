@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Demo from '../components/demo';
 import { fetchSiteContent } from '../api/cms';
@@ -247,72 +248,96 @@ const JourneySection = ({ getText, getMedia }) => {
       <div className="container" style={{ maxWidth: '1400px' }}>
         <motion.div {...fadeUpParams} style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', alignItems: 'center' }}>
           
-          <div style={{ flex: '1 1 250px', maxWidth: '350px' }}>
+          <div style={{ flex: '1 1 250px', maxWidth: '100%' }}>
             <p className="text-xs tracking-wider uppercase" style={{ marginBottom: '1rem', color: 'var(--color-text-muted)' }}>02 &mdash; YOUR JOURNEY</p>
-            <h2 style={{ fontSize: 'clamp(2rem, 3vw, 2.8rem)', marginBottom: '1.5rem', fontWeight: 400, lineHeight: 1.1, fontFamily: 'Georgia, serif' }}>
-              {getText('home_journey_title', "SEE THE JOURNEY.\nNOT JUST THE\nDESTINATION.").split('\n').map((line, i) => (
-                <React.Fragment key={i}>{line}<br/></React.Fragment>
-              ))}
+            <h2 style={{ fontSize: 'clamp(2rem, 3vw, 2.8rem)', marginBottom: '1.5rem', fontWeight: 400, lineHeight: 1.1, fontFamily: 'Georgia, serif', whiteSpace: 'nowrap' }}>
+              {getText('home_journey_title', "SEE THE JOURNEY. YOUR PROGRESS IS THE EVIDENCE.")}
             </h2>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '1rem' }}>
-              {getText('home_journey_text', "Your training is structured and reviewable, ensuring your progress is always transparent to you.")}
-            </p>
           </div>
           
           <div style={{ flex: '2 1 400px', position: 'relative' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              {['TODAY', '90 DAYS', '180 DAYS', '360 DAYS'].map(title => (
-                <div key={title} className="text-xs tracking-wider uppercase font-medium" style={{ color: 'var(--color-text-muted)' }}>{title}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+              {['TODAY', '90 DAYS', '180 DAYS', '360 DAYS'].map((title, i) => (
+                <motion.div 
+                  key={title} 
+                  initial={{ opacity: 0, y: -10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.3 + 0.2 }}
+                  className="text-xs tracking-wider uppercase font-bold" 
+                  style={{ color: 'var(--color-text-dark)' }}
+                >
+                  {title}
+                </motion.div>
               ))}
             </div>
-            <div style={{ position: 'relative', height: '1px', backgroundColor: 'rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
-              {[0, 33.3, 66.6, 100].map(pos => (
-                <div key={pos} style={{ position: 'absolute', left: `${pos}%`, top: '50%', transform: 'translate(-50%, -50%)', width: '5px', height: '5px', backgroundColor: 'var(--color-text-dark)', borderRadius: '50%' }}></div>
+            <div style={{ position: 'relative', height: '2px', backgroundColor: 'rgba(0,0,0,0.05)', marginBottom: '2.5rem', borderRadius: '2px' }}>
+              <motion.div 
+                initial={{ width: 0 }}
+                whileInView={{ width: '100%' }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+                style={{ position: 'absolute', top: 0, left: 0, height: '100%', backgroundColor: 'var(--color-text-dark)', borderRadius: '2px' }}
+              />
+              {[0, 33.3, 66.6, 100].map((pos, i) => (
+                <motion.div 
+                  key={pos} 
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5 + (i * 0.3), type: "spring" }}
+                  style={{ position: 'absolute', left: `${pos}%`, top: '50%', marginTop: '-1px', transform: 'translate(-50%, -50%)', width: '10px', height: '10px', backgroundColor: '#fff', border: '2px solid var(--color-text-dark)', borderRadius: '50%', zIndex: 2 }}
+                />
               ))}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <motion.div 
+              variants={{
+                initial: { opacity: 0 },
+                whileInView: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.8 } }
+              }}
+              initial="initial"
+              whileInView="whileInView"
+              viewport={{ once: true }}
+              style={{ display: 'flex', justifyContent: 'space-between' }}
+            >
               {[
                 { icon: '⭐', label: 'Training' },
                 { icon: '♡', label: 'Nutrition' },
                 { icon: '🌱', label: 'Recovery' },
                 { icon: '💧', label: 'Movement' },
                 { icon: '✓', label: 'Consistency' }
-              ].map(step => (
-                <div key={step.label} className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem', opacity: 0.6 }}>{step.icon}</div>
-                  <p className="text-xs font-medium" style={{ color: 'var(--color-text-dark)' }}>{step.label}</p>
-                </div>
+              ].map((step, i) => (
+                <motion.div 
+                  key={step.label} 
+                  variants={{ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 } }}
+                  className="text-center cursor-pointer" 
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                  whileHover={{ scale: 1.1, y: -5 }}
+                >
+                  <motion.div 
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{ repeat: Infinity, duration: 2 + i * 0.2, ease: "easeInOut" }}
+                    style={{ fontSize: '1.5rem', marginBottom: '0.8rem', opacity: 0.8, filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}
+                  >
+                    {step.icon}
+                  </motion.div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-dark)' }}>{step.label}</p>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
           
-          <div style={{ flex: '1.5 1 350px', display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-             <img src={getMedia('home_journey_image', fallbackImages.journeyProfile)} alt="Profile" style={{ width: '130px', height: '180px', objectFit: 'cover', borderRadius: '4px' }} />
-             <motion.div 
-               variants={staggerContainer}
-               initial="initial"
-               whileInView="whileInView"
-               style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center' }}
-             >
-                {['TRAINING', 'NUTRITION', 'RECOVERY', 'MOVEMENT', 'CONSISTENCY'].map((stat, i) => (
-                  <motion.div 
-                    key={stat} 
-                    variants={{ initial: { opacity: 0, x: -20 }, whileInView: { opacity: 1, x: 0 } }}
-                    style={{ display: 'flex', alignItems: 'center', fontSize: '0.7rem', letterSpacing: '0.1em' }}
-                  >
-                    <div style={{ width: '110px', fontWeight: 500 }}>{stat}</div>
-                    <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(0,0,0,0.1)', position: 'relative' }}>
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${Math.random() * 50 + 40}%` }}
-                        transition={{ duration: 1, delay: 0.5 + (i * 0.1) }}
-                        style={{ position: 'absolute', left: 0, top: 0, height: '1px', backgroundColor: 'var(--color-text-dark)' }}
-                      >
-                      </motion.div>
-                    </div>
-                  </motion.div>
-                ))}
-             </motion.div>
+          <div style={{ flex: '1.5 1 350px', display: 'flex', gap: '1.5rem', alignItems: 'center', justifyContent: 'center' }}>
+             <motion.img 
+               initial={{ opacity: 0, scale: 0.95, y: 20 }}
+               whileInView={{ opacity: 1, scale: 1, y: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
+               whileHover={{ scale: 1.02, boxShadow: "0 25px 50px rgba(0,0,0,0.15)" }}
+               src="/assets/Fitness_transformation_progress_…_20261003181908.jpg" 
+               alt="Progress Evidence" 
+               style={{ width: '100%', height: 'auto', objectFit: 'contain', borderRadius: '12px', cursor: 'pointer', transition: 'box-shadow 0.3s ease' }} 
+             />
           </div>
           
         </motion.div>
@@ -327,19 +352,22 @@ const TrnKioskSection = ({ getText, getMedia }) => {
       imageKey: 'home_kiosk_image_1',
       fallback: fallbackImages.trainingReformer,
       title: 'REFORMER',
-      subtitle: 'CORE STRENGTH'
+      subtitle: 'CORE STRENGTH',
+      link: '/pilates'
     },
     {
       imageKey: 'home_kiosk_image_2',
       fallback: fallbackImages.trainingStrength,
       title: 'STRENGTH',
-      subtitle: 'MUSCLE BUILDING'
+      subtitle: 'MUSCLE BUILDING',
+      link: '/bootcamp'
     },
     {
       imageKey: 'home_kiosk_image_3',
       fallback: fallbackImages.trainingPerformance,
       title: 'PERFORMANCE',
-      subtitle: 'ATHLETIC MOVEMENT'
+      subtitle: 'ATHLETIC MOVEMENT',
+      link: '/online'
     }
   ];
 
@@ -347,7 +375,7 @@ const TrnKioskSection = ({ getText, getMedia }) => {
     <section id="home_kiosk" className="section-padding" style={{ backgroundColor: '#f9f8f6' }}>
       <div className="container" style={{ maxWidth: '1600px' }}>
         <p className="text-xs tracking-wider uppercase font-medium" style={{ color: 'var(--color-text-dark)', marginBottom: '1.5rem' }}>
-          0.2 &mdash; TRN KIOSK
+          03 &mdash; TRN KIOSK
         </p>
         
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: '1rem' }}>
@@ -360,16 +388,18 @@ const TrnKioskSection = ({ getText, getMedia }) => {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               style={{ flex: '1 0 300px', height: '500px', position: 'relative', overflow: 'hidden' }}
             >
-              <img 
-                src={getMedia(card.imageKey, card.fallback)} 
-                alt={card.title} 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 40%)' }}></div>
-              <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', color: '#fff' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 500, letterSpacing: '0.05em', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{card.title}</h3>
-                <p style={{ fontSize: '0.8rem', letterSpacing: '0.1em', opacity: 0.8, textTransform: 'uppercase' }}>{card.subtitle}</p>
-              </div>
+              <Link to={card.link} style={{ display: 'block', width: '100%', height: '100%', textDecoration: 'none' }}>
+                <img 
+                  src={getMedia(card.imageKey, card.fallback)} 
+                  alt={card.title} 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 40%)' }}></div>
+                <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', color: '#fff' }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 500, letterSpacing: '0.05em', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{card.title}</h3>
+                  <p style={{ fontSize: '0.8rem', letterSpacing: '0.1em', opacity: 0.8, textTransform: 'uppercase' }}>{card.subtitle}</p>
+                </div>
+              </Link>
             </motion.div>
           ))}
           
@@ -490,7 +520,7 @@ const LongevitySection = ({ getText, getMedia }) => {
           
           <div style={{ flex: '1 1 350px', maxWidth: '450px' }}>
             <p className="text-xs tracking-wider uppercase font-medium" style={{ marginBottom: '1.5rem', color: 'var(--color-text-dark)' }}>
-              06 &mdash; LONGEVITY
+              05 &mdash; LONGEVITY
             </p>
             <h2 style={{ fontSize: 'clamp(2rem, 3vw, 2.5rem)', marginBottom: '1.5rem', fontWeight: 400, lineHeight: 1.1, fontFamily: 'Georgia, serif', color: 'var(--color-text-dark)' }}>
               {getText('home_longevity_title', "YOUR STRONGEST YEARS\nSHOULDN'T BE BEHIND YOU.").split('\n').map((line, i) => (
@@ -569,9 +599,9 @@ export default function Home() {
       <AssessmentSection getText={getText} getMedia={getMedia} />
       <JourneySection getText={getText} getMedia={getMedia} />
       <TrnKioskSection getText={getText} getMedia={getMedia} />
-      <Demo />
+      {/* <Demo /> */}
       <CoachSection getText={getText} getMedia={getMedia} />
-      <ProgressSection getText={getText} getMedia={getMedia} />
+      {/* <ProgressSection getText={getText} getMedia={getMedia} /> */}
       <LongevitySection getText={getText} getMedia={getMedia} />
     </main>
   );
