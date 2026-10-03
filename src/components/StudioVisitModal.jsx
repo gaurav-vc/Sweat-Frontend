@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle } from 'lucide-react';
-import { submitStudioVisit } from '../api/cms';
 
 const goalsList = [
   "Weight loss", "Build muscle", "Improve mobility",
@@ -211,67 +210,52 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
     setLoading(true);
     setError(null);
     try {
-      // 1. Primary Action — Save to Django backend (falls back to live endpoint if local port 8000 is occupied by CRM)
-      try {
-        await submitStudioVisit({
-          ...formData,
-          contact_number: `+91 ${formData.contact_number}`
-        });
-      } catch (cmsErr) {
-        console.warn('CMS submission via client.js failed (e.g. port 8000 used by CRM), attempting direct live CMS endpoint:', cmsErr);
+      // Primary Action: Submit lead directly into CRM software via Public Webhook
+      // Note: Data is routed straight to PerformanceOS CRM and deliberately bypasses the CMS admin panel.
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const crmBackendUrl = isLocalhost 
+        ? 'http://localhost:8000' 
+        : 'https://api.fitness.vibecopilot.ai';
+      // In local development, the tenant is 'sweat'. In production, the tenant organization code is 'sweat-demo'.
+      const tenantSlug = isLocalhost ? 'sweat' : 'sweat-demo';
+
+      const response = await fetch(`${crmBackendUrl}/api/v1/webhooks/leads/${tenantSlug}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          // Contact details
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          email: formData.email,
+          phone: `+91 ${formData.contact_number}`,
+          // Interest & location
+          branch_name: formData.branch_name,
+          interested_in: formData.interested_in,
+          goal: formData.goal,
+          // Location fields
+          pincode: formData.pincode,
+          country: formData.country,
+          state: formData.state,
+          location_area: formData.location_area,
+          // Personal details
+          gender: formData.gender,
+          birthday: formData.birthday,
+          // Lead source
+          lead_source: 'WEBSITE',
+        })
+      });
+
+      if (!response.ok) {
+        let errorMsg = 'Failed to submit request. Please try again.';
         try {
-          await fetch('https://sweatfit.vibesandbox.live/api/cms/studio-visits/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              ...formData,
-              contact_number: `+91 ${formData.contact_number}`
-            })
-          });
-        } catch (liveErr) {
-          console.warn('Direct live CMS post also failed:', liveErr);
-        }
+          const errData = await response.json();
+          if (errData?.error) errorMsg = errData.error;
+          else if (errData?.detail) errorMsg = errData.detail;
+        } catch (_) {}
+        throw new Error(errorMsg);
       }
 
-      // 2. CRM Webhook — Send ALL fields to CRM (fails silently if CRM is offline)
-      try {
-        const tenantSlug = 'sweat';
-        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const crmBackendUrl = isLocalhost ? 'http://localhost:8000' : null; // CRM not live yet — skip in production
-
-        if (crmBackendUrl) {
-          await fetch(`${crmBackendUrl}/api/v1/webhooks/leads/${tenantSlug}/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              // Contact details
-              first_name: formData.first_name,
-              last_name: formData.last_name,
-              email: formData.email,
-              phone: `+91 ${formData.contact_number}`,
-              // Interest & location
-              branch_name: formData.branch_name,
-              interested_in: formData.interested_in,
-              goal: formData.goal,
-              // Location fields
-              pincode: formData.pincode,
-              country: formData.country,
-              state: formData.state,
-              location_area: formData.location_area,
-              // Personal details
-              gender: formData.gender,
-              birthday: formData.birthday,
-              // Lead source
-              lead_source: 'WEBSITE',
-            })
-          });
-        }
-      } catch (crmError) {
-        // CRM webhook fails silently — form submission still succeeds
-        console.warn('CRM Webhook connection failed, but proceeding:', crmError);
-      }
-
-      // 3. Always show success
+      // Show success screen and reset form
       setSuccess(true);
       setTimeout(() => {
         handleClose();
@@ -283,8 +267,8 @@ const StudioVisitModal = ({ isOpen: propIsOpen, onClose: propOnClose }) => {
         });
       }, 3000);
     } catch (err) {
-      console.error(err);
-      setError('Something went wrong. Please try again.');
+      console.error('Lead submission error:', err);
+      setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
